@@ -1,5 +1,5 @@
 <p align="center">
- Todo List - Senai
+ To-Do List - Senai
 </p>
 
 <p align="center">
