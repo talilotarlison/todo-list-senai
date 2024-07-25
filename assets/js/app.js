@@ -6,10 +6,10 @@ const input = document.querySelector('input[type=text]');
 form.addEventListener('submit', (event) => {
     event.preventDefault();
 
-    // faça a validação ou processamento adicional aqui
+    // Faça a validação ou processamento adicional aqui
 
     const formData = new FormData(form);
-    let task = formData.get("task").trim(); //reponsavel por limpar string
+    let task = formData.get("task").trim(); // Responsavel por limpar string
     let id = Math.floor(Math.random() * 1000);
 
     if (task == "" || id == null) {
@@ -31,11 +31,10 @@ let listaDados = (tarefasDados) => {
     tarefas.innerHTML = "";
 
     if (tarefasDados == "") {
-        var texto = "Não existe tarefas cadastradas!"; // Texto para o parágrafo
-        var paragrafo = document.createElement("p"); // Cria o elemento <p>
-        var textoNode = document.createTextNode(texto); // Cria um nó de texto com o conteúdo
+        const texto = "Não existe tarefas cadastradas!"; // Texto para o parágrafo
+        const paragrafo = document.createElement("p"); // Cria o elemento <p>
+        const textoNode = document.createTextNode(texto); // Cria um nó de texto com o conteúdo
         paragrafo.appendChild(textoNode); // Insere o texto no elemento <p>
-
         tarefas.appendChild(paragrafo); // Insere o parágrafo dentro da <div>
         return
     }
@@ -47,7 +46,7 @@ let listaDados = (tarefasDados) => {
     eventoBotoes();
 }
 
-// class que guarda os dados das tarefas
+// Class que guarda os dados das tarefas
 class TaskData {
     tasks;
     constructor(tasks) {
@@ -62,13 +61,13 @@ class TaskData {
         return this.tasks;
     }
 
-    limpaTasks() {
-        this.tasks = [];
+    set limpaTasks(task) {
+        this.tasks = task;
     }
 
 }
 
-// classe que cria as tarefas
+// Classe que cria as tarefas
 class Task {
     id;
     task;
@@ -86,7 +85,7 @@ class Task {
     }
 }
 
-//componente tarefas
+//Componente tarefas
 
 let componenteTask = ({ id, tarefa }) => {
     tarefas.innerHTML += `<li class="task" data-idfsui=${id} >
@@ -96,7 +95,7 @@ let componenteTask = ({ id, tarefa }) => {
                         `;
 }
 
-// eventos de escuta btns
+// Eventos de escuta dos botoes
 
 let eventoBotoes = () => {
     const buttons = document.querySelectorAll('button');
@@ -111,11 +110,11 @@ let eventoBotoes = () => {
     });
 }
 
-// função exluir dados [Opção 1]
+// Função exluir dados [Opção 1]
 let exluirDadosFinal = (id) => {
 
-    let filtro = data.getTasks();
-    data.limpaTasks();
+    let filtro = data.getTasks;
+    data.limpaTasks = [];
 
     filtro.filter((task) => {
         if (task.id != id) {
@@ -123,30 +122,30 @@ let exluirDadosFinal = (id) => {
         }
     })
 
-    listaDados(data.getTasks());
+    listaDados(data.getTasks);
 }
 
 
-// [Ativa] função excluir dados [Opção 2]
+// Função excluir dados [Opção 2] [Ativa] 
 
 let exluirDados = (id) => {
     let filtro = data.getTasks.filter((task) => {
         return task.id != id;
     })
 
-    data.limpaTasks();
+    data.limpaTasks = [];
     filtro.forEach((tarefa) => { data.addTask(tarefa) });
     let allTasks = data.getTasks;
     listaDados(allTasks);
 }
 
-// erro de input 
+// Erro de input 
 let limaCampo = () => {
     input.value = "";
     input.focus();
 }
 
-// modal de alerta erro
+// Modal de alerta erro
 let errorAlert = (msg) => {
     Swal.fire({
         text: msg,
@@ -162,7 +161,8 @@ let errorAlert = (msg) => {
     input.style.borderColor = "red";
 
 }
-// modal de alerta
+
+// Modal de alerta
 let removerAlert = (msg) => {
     Swal.fire({
         title: "Perfeito!",
@@ -171,9 +171,9 @@ let removerAlert = (msg) => {
     });
 }
 
-// inicializa o banco de tarefas
+// Inicializa o banco de tarefas
 let data = new TaskData([{ id: 31, task: "Felicidade" }, { id: 321, task: "Amor" }, { id: 331, task: "Paixao" }]);
 
-// inicializa as tarefas
+// Inicializa as tarefas
 let allTasks = data.getTasks;
 listaDados(allTasks);
