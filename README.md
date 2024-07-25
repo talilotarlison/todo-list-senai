@@ -19,7 +19,7 @@ Aplicação desenvolvida no curso Senai com HTML+CSS+JS.
 <br>
 
 <p align="center">
-  <img alt="Preview do projeto desenvolvido." src="https://github.com/talilotarlison/nlw-journey-html-css-js-original/raw/main/.github/preview.png" width="60%">
+  <img alt="Preview do projeto desenvolvido." src="https://github.com/talilotarlison/todo-list-senai/blob/main/imagem.png" width="60%">
 </p>
 
 
