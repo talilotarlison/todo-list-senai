@@ -9,7 +9,7 @@ form.addEventListener('submit', (event) => {
     // faça a validação ou processamento adicional aqui
 
     const formData = new FormData(form);
-    let task = formData.get("task");
+    let task = formData.get("task").trim(); //reponsavel por limpar string
     let id = Math.floor(Math.random() * 1000);
 
     if (task == "" || id == null) {
