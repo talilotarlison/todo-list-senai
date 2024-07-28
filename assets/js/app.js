@@ -1,7 +1,8 @@
 
 const form = document.querySelector('form');
 const tarefas = document.querySelector('#taks-list');
-const input = document.querySelector('input[type=text]');
+const inputTexto = document.querySelector('input[type=text]');
+const checkboxes = document.getElementsByName('checkbox-task');
 
 form.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -13,21 +14,21 @@ form.addEventListener('submit', (event) => {
     let id = Math.floor(Math.random() * 1000);
 
     if (task == "" || id == null) {
-        errorAlert("O campo não pode ser vazio!Tente novamente.");
+        mensagemErrorAlertaNaTela("O campo não pode ser vazio!Tente novamente.");
         return
     }
 
     let newTask = new Task(id, task);
 
-    data.addTask(newTask);
-    let allTasks = data.getTasks;
+    data.addDataTask(newTask);
+    let allTasks = data.getAllTasks;
 
-    limaCampo();
-    listaDados(allTasks);
+    limparCampoInput();
+    listarTodasTarefasTela(allTasks);
 
 });
 
-let listaDados = (tarefasDados) => {
+let listarTodasTarefasTela = (tarefasDados) => {
     tarefas.innerHTML = "";
 
     if (tarefasDados == "") {
@@ -40,10 +41,11 @@ let listaDados = (tarefasDados) => {
     }
 
     tarefasDados.map((task) => {
-        componenteTask({ id: task.id, tarefa: task.task });
+        componenteTarefa({ id: task.id, tarefa: task.task, status: task.complete });
     })
 
-    eventoBotoes();
+    eventoEscultaBotoesDelete();
+    eventoEscultaBotoesCheckbox(checkboxes)
 }
 
 // Class que guarda os dados das tarefas
@@ -53,16 +55,23 @@ class TaskData {
         this.tasks = tasks;
     }
 
-    addTask(task) {
+    addDataTask(task) {
         this.tasks.push(task);
     }
 
-    get getTasks() {
+    get getAllTasks() {
         return this.tasks;
     }
 
-    set limpaTasks(task) {
-        this.tasks = task;
+    removeTodasTarefa() {
+        while (this.tasks.length) {
+            this.tasks.pop();
+        }
+
+    }
+
+    atualizaDataTask(task) {
+        this.tasks.push(task);
     }
 
 }
@@ -71,9 +80,11 @@ class TaskData {
 class Task {
     id;
     task;
-    constructor(id, task) {
+    complete
+    constructor(id, task, complete) {
         this.id = id;
         this.task = task;
+        this.complete = complete || null;
     }
 
     get getId() {
@@ -83,12 +94,24 @@ class Task {
     get getTask() {
         return this.task;
     }
+
+    set setCompleteTask(status) {
+        this.task = status;
+    }
 }
 
 //Componente tarefas
 
-let componenteTask = ({ id, tarefa }) => {
-    tarefas.innerHTML += `<li class="task" data-idfsui=${id} >
+let componenteTarefa = ({ id, tarefa, status }) => {
+    let concluidoTarefaTexto = "";
+    let concluidaTerefaCheckbox = "";
+    if (status == true) {
+        concluidoTarefaTexto = "active-checkbox";
+        concluidaTerefaCheckbox = "checked"
+    }
+
+    tarefas.innerHTML += `<li class="task ${concluidoTarefaTexto}">
+                            <input type="checkbox" name="checkbox-task" value=${id} ${concluidaTerefaCheckbox} >
                             <p>${tarefa}</p>
                             <button data-id=${id}>Remove</button>
                         </li>
@@ -97,73 +120,59 @@ let componenteTask = ({ id, tarefa }) => {
 
 // Eventos de escuta dos botoes
 
-let eventoBotoes = () => {
+let eventoEscultaBotoesDelete = () => {
     const buttons = document.querySelectorAll('button');
 
     buttons.forEach((button) => {
         button.addEventListener('click', (evento) => {
 
             let idExcluir = evento.target.dataset.id;
-            exluirDados(idExcluir);
-            removerAlert("Tarefa deletada com sucesso!");
+            excluirTarefaSelecionada(idExcluir);
+            removerAlertaTela("Tarefa deletada com sucesso!");
         });
     });
 }
 
-// Função exluir dados [Opção 1]
-let exluirDadosFinal = (id) => {
 
-    let filtro = data.getTasks;
-    data.limpaTasks = [];
+// Função excluir dados [Ativa] 
 
-    filtro.filter((task) => {
-        if (task.id != id) {
-            data.addTask(task);
-        }
-    })
-
-    listaDados(data.getTasks);
-}
-
-
-// Função excluir dados [Opção 2] [Ativa] 
-
-let exluirDados = (id) => {
-    let filtro = data.getTasks.filter((task) => {
+let excluirTarefaSelecionada = (id) => {
+    let tarefasDisponiveis = data.getAllTasks.filter((task) => {
         return task.id != id;
     })
 
-    data.limpaTasks = [];
-    filtro.forEach((tarefa) => { data.addTask(tarefa) });
-    let allTasks = data.getTasks;
-    listaDados(allTasks);
+    data.removeTodasTarefa();
+
+    tarefasDisponiveis.forEach((tarefa) => { data.atualizaDataTask(tarefa) });
+    let allTasks = data.getAllTasks;
+    listarTodasTarefasTela(allTasks);
 }
 
 // Erro de input 
-let limaCampo = () => {
-    input.value = "";
-    input.focus();
+let limparCampoInput = () => {
+    inputTexto.value = "";
+    inputTexto.focus();
 }
 
 // Modal de alerta erro
-let errorAlert = (msg) => {
+let mensagemErrorAlertaNaTela = (msg) => {
     Swal.fire({
         text: msg,
         icon: "error"
     });
 
     setTimeout(() => {
-        input.style.borderColor = "black";
-        input.focus();
+        inputTexto.style.borderColor = "black";
+        inputTexto.focus();
     }, "3000");
 
-    input.style.borderStyle = 'solid';
-    input.style.borderColor = "red";
+    inputTexto.style.borderStyle = 'solid';
+    inputTexto.style.borderColor = "red";
 
 }
 
 // Modal de alerta
-let removerAlert = (msg) => {
+let removerAlertaTela = (msg) => {
     Swal.fire({
         title: "Perfeito!",
         icon: "success",
@@ -171,9 +180,32 @@ let removerAlert = (msg) => {
     });
 }
 
+
+// pegar dados id da tarefa selecionada como comluida
+let eventoEscultaBotoesCheckbox = (checkboxes) => {
+    checkboxes.forEach((checkbox) => {
+        checkbox.addEventListener("change", (e) => {
+            concluirTarefaSelecionada(e.target.value);
+        })
+    })
+}
+
+
+let concluirTarefaSelecionada = (id) => {
+    data.getAllTasks.filter((task) => {
+        if (task.id == id) {
+            task.complete = !task.complete;
+            console.log(task.complete)
+        }
+
+        let allTasks = data.getAllTasks;
+        listarTodasTarefasTela(allTasks);
+    })
+}
+
 // Inicializa o banco de tarefas
-let data = new TaskData([{ id: 31, task: "Felicidade" }, { id: 321, task: "Amor" }, { id: 331, task: "Paixao" }]);
+let data = new TaskData([{ id: 31, task: "Felicidade" }, { id: 321, task: "Amor" }, { id: 331, task: "Paixao", complete: true }]);
 
 // Inicializa as tarefas
-let allTasks = data.getTasks;
-listaDados(allTasks);
+let allTasks = data.getAllTasks;
+listarTodasTarefasTela(allTasks);
